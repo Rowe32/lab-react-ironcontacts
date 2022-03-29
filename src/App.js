@@ -1,11 +1,55 @@
 import './App.css';
 import allContacts from "./contacts.json"
 import { useState } from "react";
-import { nanoid } from "nanoid"
+
+function ActorComponent ({singleActor: { pictureUrl, name, popularity, wonOscar, wonEmmy}}) {
+  return (
+    <tr>
+      <td><img src={pictureUrl} height={100} alt={name}/></td>
+      <td><h3>{name}</h3></td>
+      <td><h3>{popularity}</h3></td>
+      <td><h3>{ wonOscar ? "🏆" : "" }</h3></td>
+      <td><h3>{ wonEmmy ?  "🏆" : "" }</h3></td>
+    </tr>
+  )
+}
+
+
+/*
+THIS HAS TO GO INSIDE THE FUNCTION...
+const test = allContacts.map((actor) => {
+  console.log("from outside of func")
+  return {
+    ...actor,
+    id: nanoid(),
+  };
+});
+console.log(test.map((actor)=> actor.id))
+*/
 
 function App() {
-  const [celebs, setCelebs] = useState();
-  const firstFive = allContacts.slice(0, 6);
+  //problem exists only in local dev mode (IA of Webpack - Code - Browser)
+  // previously actorsWithID changed and celebs didn't...
+  //turn id also into state variable (so it doesn't change with every re-load):
+  //we don't need the setActorsWithId here...
+  //now ids of celebs and actorsWithID match (both get hot-module-replaced - "replace code and keep state")
+  //"cold-module-replace": hard-re-load loses the state
+  // => we dont need to re-assign ids at all....
+  
+  const [celebs, setCelebs] = useState(allContacts.slice(0, 5));
+
+  const addCeleb = () => {
+    setCelebs((currentCelebs) => {
+      const ids = currentCelebs.map((actor) => actor.id)
+      const remainingActors = allContacts.filter((actor) => {
+        const test = !ids.includes(actor.id);
+        return test;
+      })
+      const randomIndex = Math.floor(Math.random() * remainingActors.length);
+      const dedupActors = new Set([remainingActors[randomIndex], ...currentCelebs]);
+      return [...dedupActors];
+    });
+  };
 
   return (
     <div className="App">
@@ -20,18 +64,13 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {firstFive.map((elem, index) => {
-            return (
-            <tr key= { nanoid() }>
-              <td><img src={elem.pictureUrl} height={100} alt={elem.name}/></td>
-              <td><h3>{elem.name}</h3></td>
-              <td><h3>{elem.popularity}</h3></td>
-              <td><h3>{ elem.wonOscar ? "🏆" : "" }</h3></td>
-              <td><h3>{ elem.wonEmmy ?  "🏆" : "" }</h3></td>
-            </tr>
-          )})}
+          {celebs.map((actor) => (
+            <ActorComponent singleActor={actor} key={actor.id} />
+          ))}
         </tbody>
-      </table> 
+      </table>
+
+      <button onClick={ addCeleb }> Add celebrity! </button>
     </div>
   );
 }
