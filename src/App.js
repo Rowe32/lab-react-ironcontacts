@@ -35,15 +35,14 @@ function App() {
   //now ids of celebs and actorsWithID match (both get hot-module-replaced - "replace code and keep state")
   //"cold-module-replace": hard-re-load loses the state
   // => we dont need to re-assign ids at all....
-  
+
   const [celebs, setCelebs] = useState(allContacts.slice(0, 5));
 
   const addCeleb = () => {
     setCelebs((currentCelebs) => {
       const ids = currentCelebs.map((actor) => actor.id)
       const remainingActors = allContacts.filter((actor) => {
-        const test = !ids.includes(actor.id);
-        return test;
+        return !ids.includes(actor.id);
       })
       const randomIndex = Math.floor(Math.random() * remainingActors.length);
       const dedupActors = new Set([remainingActors[randomIndex], ...currentCelebs]);
@@ -51,8 +50,38 @@ function App() {
     });
   };
 
+  const sortPop = () => {
+    setCelebs((currentCelebs) => {
+      const copyCelebs = [...currentCelebs];
+      const sortedCelebs = copyCelebs.sort((a, b) => {
+        //ascending order
+        // a - b for comparing numbers
+        return a.popularity - b.popularity;
+      })
+      return sortedCelebs;
+    })
+  }
+
+  const sortName  = () => {
+    setCelebs((currentCelebs) => {
+      const copyCelebs = [...currentCelebs];
+      const sortedCelebs = copyCelebs.sort((a, b) => {
+        //ascending order
+        // sorting alphabetically with a > b
+        return a.name > b.name;
+      })
+      console.log(sortedCelebs)
+      return sortedCelebs;
+    })
+  }
+
+
   return (
     <div className="App">
+    <h1>IronContacts</h1>
+    <button onClick={ addCeleb }> Add random celebrity </button>
+    <button onClick={ sortPop }> Sort by Popularity </button>
+    <button onClick={ sortName }> Sort by Name </button>
       <table>
         <thead>
           <tr>
@@ -70,7 +99,6 @@ function App() {
         </tbody>
       </table>
 
-      <button onClick={ addCeleb }> Add celebrity! </button>
     </div>
   );
 }
