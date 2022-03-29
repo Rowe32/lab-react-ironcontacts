@@ -2,19 +2,6 @@ import './App.css';
 import allContacts from "./contacts.json"
 import { useState } from "react";
 
-function ActorComponent (props) {
-  return (
-    <tr>
-      <td><img src={props.pictureUrl} height={100} alt={props.name}/></td>
-      <td><h3>{props.name}</h3></td>
-      <td><h3>{props.popularity}</h3></td>
-      <td><h3>{ props.wonOscar ? "🏆" : "" }</h3></td>
-      <td><h3>{ props.wonEmmy ?  "⭐" : "" }</h3></td>
-      { props.children }  
-    </tr>
-  )
-}
-
 /*
 THIS HAS TO GO INSIDE THE FUNCTION...
 const test = allContacts.map((actor) => {
@@ -70,11 +57,11 @@ function App() {
         // sorting alphabetically with a > b
         return a.name > b.name;
       })
-      console.log(sortedCelebs)
       return sortedCelebs;
     })
   }
 
+  // we need to pass an argument to this function when we call it
   const deleteActor = (actorToDelete) => {
     setCelebs((currentCelebs) => {
       return currentCelebs.filter(
@@ -101,14 +88,19 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {celebs.map((actor) => (
-            <ActorComponent props={actor} key={actor.id} >
-            <td><button onClick={ deleteActor } > Delete </button></td>
-            </ActorComponent>
-          ))}
+          {celebs.map((actor) => {
+          return (
+            <tr  key={actor.id}>
+              <td><img src={actor.pictureUrl} height={100} alt={actor.name}/></td>
+              <td><h3>{actor.name}</h3></td>
+              <td><h3>{actor.popularity}</h3></td>
+              <td><h3>{ actor.wonOscar ? "🏆" : "" }</h3></td>
+              <td><h3>{ actor.wonEmmy ?  "⭐" : "" }</h3></td>
+              <td><button onClick={ () => deleteActor(actor) }> Delete </button></td>  
+            </tr>
+          )})}
         </tbody>
       </table>
-
     </div>
   );
 }
