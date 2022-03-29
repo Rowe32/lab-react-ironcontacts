@@ -1,23 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import allContacts from "./contacts.json"
+import { useState } from "react";
+import { nanoid } from "nanoid"
 
 function App() {
+  const [celebs, setCelebs] = useState();
+  const firstFive = allContacts.slice(0, 5);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <table>
+        <thead>
+          <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Popularity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {firstFive.map((elem, index) => {
+            return (
+            <tr key= { nanoid() }>
+              <td><img src={elem.pictureUrl} height={100} alt={elem.name}/></td>
+              <td><h3>{elem.name}</h3></td>
+              <td><h3>{elem.popularity}</h3></td>
+            </tr>
+          )})}
+        </tbody>
+      </table> 
     </div>
   );
 }
