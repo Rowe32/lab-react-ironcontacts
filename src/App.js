@@ -2,18 +2,18 @@ import './App.css';
 import allContacts from "./contacts.json"
 import { useState } from "react";
 
-function ActorComponent ({singleActor: { pictureUrl, name, popularity, wonOscar, wonEmmy}}) {
+function ActorComponent (props) {
   return (
     <tr>
-      <td><img src={pictureUrl} height={100} alt={name}/></td>
-      <td><h3>{name}</h3></td>
-      <td><h3>{popularity}</h3></td>
-      <td><h3>{ wonOscar ? "🏆" : "" }</h3></td>
-      <td><h3>{ wonEmmy ?  "🏆" : "" }</h3></td>
+      <td><img src={props.pictureUrl} height={100} alt={props.name}/></td>
+      <td><h3>{props.name}</h3></td>
+      <td><h3>{props.popularity}</h3></td>
+      <td><h3>{ props.wonOscar ? "🏆" : "" }</h3></td>
+      <td><h3>{ props.wonEmmy ?  "⭐" : "" }</h3></td>
+      { props.children }  
     </tr>
   )
 }
-
 
 /*
 THIS HAS TO GO INSIDE THE FUNCTION...
@@ -75,6 +75,14 @@ function App() {
     })
   }
 
+  const deleteActor = (actorToDelete) => {
+    setCelebs((currentCelebs) => {
+      return currentCelebs.filter(
+        (actor) => actor.id !== actorToDelete.id
+      );
+    });
+  };
+
 
   return (
     <div className="App">
@@ -94,7 +102,9 @@ function App() {
         </thead>
         <tbody>
           {celebs.map((actor) => (
-            <ActorComponent singleActor={actor} key={actor.id} />
+            <ActorComponent props={actor} key={actor.id} >
+            <td><button onClick={ deleteActor } > Delete </button></td>
+            </ActorComponent>
           ))}
         </tbody>
       </table>
